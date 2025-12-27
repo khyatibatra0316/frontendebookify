@@ -13,6 +13,7 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [token, setToken] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -20,10 +21,12 @@ export const UserProvider = ({ children }) => {
         // Check for existing session
         const storedRole = localStorage.getItem('userRole');
         const storedUser = localStorage.getItem('userData');
+        const storedToken = localStorage.getItem('token');
 
-        if (storedRole && storedUser) {
+        if (storedRole && storedUser && storedToken) {
             setRole(storedRole);
             setUser(JSON.parse(storedUser));
+            setToken(storedToken);
             setIsAuthenticated(true);
         }
         setLoading(false);
@@ -34,10 +37,16 @@ export const UserProvider = ({ children }) => {
         localStorage.setItem('userRole', selectedRole);
     };
 
-    const login = (userData) => {
+    const login = (userData, authToken) => {
         setUser(userData);
         setIsAuthenticated(true);
         localStorage.setItem('userData', JSON.stringify(userData));
+
+        if (authToken) {
+            setToken(authToken);
+            localStorage.setItem('token', authToken);
+        }
+
         if (userData.role) {
             setRole(userData.role);
             localStorage.setItem('userRole', userData.role);
@@ -47,14 +56,18 @@ export const UserProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         setRole(null);
+        setToken(null);
         setIsAuthenticated(false);
         localStorage.removeItem('userData');
         localStorage.removeItem('userRole');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user'); // Also remove 'user' key used by authService
     };
 
     const value = {
         user,
         role,
+        token,
         isAuthenticated,
         loading,
         selectRole,

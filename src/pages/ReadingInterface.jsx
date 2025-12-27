@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getBook } from '../services/bookService';
-import { ArrowLeft, Type, Heart, ChevronRight } from 'lucide-react';
+import { useUser } from '../context/UserContext';
+import { getBook, deleteBook, BASE_URL } from '../services/bookService';
+import { ArrowLeft, Type, Heart, ChevronRight, Trash2, AlertTriangle } from 'lucide-react';
 import './ReadingInterface.css';
 
 const ReadingInterface = ({ book: propBook }) => {
     const navigate = useNavigate();
     const { bookId } = useParams();
+    const { user } = useUser();
     const [book, setBook] = useState(propBook);
     const [loading, setLoading] = useState(!propBook);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         if (!propBook && bookId) {
@@ -29,6 +33,23 @@ const ReadingInterface = ({ book: propBook }) => {
             setLoading(false);
         }
     };
+
+    const handleDeleteBook = async () => {
+        try {
+            setDeleting(true);
+            await deleteBook(book._id);
+            navigate('/writer');
+        } catch (error) {
+            console.error('Error deleting book:', error);
+            alert('Failed to delete book');
+            setShowDeleteConfirm(false);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    const isBookOwner = user && book && book.writerId &&
+        (book.writerId._id === user._id || book.writerId === user._id);
 
     if (loading) {
         return (
@@ -59,16 +80,16 @@ const ReadingInterface = ({ book: propBook }) => {
 
     const getCategoryEmoji = (category) => {
         const emojis = {
-            'Sci-Fi': '🌌',
-            'Cyberpunk': '🤖',
-            'Non-Fiction': '🧠',
-            'Romance': '🌸',
-            'Adventure': '🗺️',
-            'Cooking': '👨‍🍳',
-            'Thriller': '💻',
-            'Fantasy': '🔮',
-            'Fiction': '📚',
-            'Technical': '⚙️',
+            'Sci-Fi': '',
+            'Cyberpunk': '',
+            'Non-Fiction': '',
+            'Romance': '',
+            'Adventure': '',
+            'Cooking': '',
+            'Thriller': '',
+            'Fantasy': '',
+            'Fiction': '',
+            'Technical': '',
         };
         return emojis[category] || '📖';
     };
@@ -96,6 +117,18 @@ const ReadingInterface = ({ book: propBook }) => {
                 <div className="header-actions">
                     <button className="action-button"><Type size={18} /></button>
                     <button className="action-button"><Heart size={18} /></button>
+                    {isBookOwner && (
+                        <>
+                            <div className="header-divider-vertical"></div>
+                            <button
+                                onClick={() => setShowDeleteConfirm(true)}
+                                className="action-button delete-button"
+                                title="Delete Book"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </>
+                    )}
                     <div className="header-divider-vertical"></div>
                     <div className="progress-text">0% READ</div>
                 </div>
@@ -108,7 +141,7 @@ const ReadingInterface = ({ book: propBook }) => {
                     <div className="cover-container">
                         {book.coverImage ? (
                             <img
-                                src={`http://localhost:4000${book.coverImage}`}
+                                src={`${BASE_URL}${book.coverImage}`}
                                 alt={book.title}
                                 className="cover-image"
                             />
@@ -134,7 +167,7 @@ const ReadingInterface = ({ book: propBook }) => {
                         <div className="file-access-box">
                             <p className="file-access-text">This book is available for reading.</p>
                             <a
-                                href={`http://localhost:4000${book.fileUrl}`}
+                                href={`${BASE_URL}${book.fileUrl}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="open-file-button"
@@ -195,6 +228,46 @@ const ReadingInterface = ({ book: propBook }) => {
                     </button>
                 </div>
             </div>
+
+            {showDeleteConfirm && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <AlertTriangle className="warning-icon" size={48} />
+                            <h2>Delete Book?</h2>
+                        </div>
+                        <p className="modal-text">
+                            Are you sure you want to delete "{book.title}"? This action cannot be undone.
+                        </p>
+                        <div className="modal-actions">
+                            <button
+                                onClick={() => setShowDeleteConfirm(false)}
+                                className="modal-btn modal-btn-secondary"
+                                disabled={deleting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteBook}
+                                className="modal-btn modal-btn-danger"
+                                disabled={deleting}
+                            >
+                                {deleting ? (
+                                    <>
+                                        <div className="modal-spinner"></div>
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 size={18} />
+                                        Delete Forever
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="progress-bar"></div>
         </div>

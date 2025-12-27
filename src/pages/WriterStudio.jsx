@@ -84,11 +84,7 @@ const WriterStudio = () => {
                     <h1 className="header-title">EBookify<span className="header-title-accent"></span></h1>
                 </div>
                 <div className="header-right">
-                    <div className="sync-badge">
-                        <div className="sync-dot"></div>
-                        <span className="sync-text">SYNCED</span>
-                    </div>
-                    <div className="profile-avatar"></div>
+                    
                 </div>
             </header>
 
@@ -205,7 +201,7 @@ const WriterStudio = () => {
                                 onClick={handleBack}
                                 className="abort-button"
                             >
-                                [ Abort ]
+                                Back
                             </button>
                             <button
                                 type="submit"

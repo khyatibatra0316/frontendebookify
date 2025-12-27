@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import WriterStudio from './pages/WriterStudio';
 import ReaderDashboard from './pages/ReaderDashboard';
 import ReadingInterface from './pages/ReadingInterface';
+import ProfilePage from './pages/ProfilePage';
 import './App.css';
 
 // Protected route wrapper
@@ -69,6 +70,14 @@ const AppContent = () => {
         element={
           <ProtectedRoute requiredRole="reader">
             <ReadingInterface book={currentBook} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />

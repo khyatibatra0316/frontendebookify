@@ -28,9 +28,17 @@ const Login = () => {
         try {
             const response = await authService.login(formData.email, formData.password);
 
+            console.log('Login response:', response);
+            console.log('Token from response:', response.token);
+            console.log('User from response:', response.user);
+
             if (response.success) {
                 // Update UserContext with user data
                 loginUser(response.user, response.token);
+
+                // Verify token was stored
+                console.log('Token in localStorage:', localStorage.getItem('token'));
+                console.log('User in localStorage:', localStorage.getItem('userData'));
 
                 // Redirect based on role
                 if (response.user.role === 'writer') {
@@ -42,6 +50,7 @@ const Login = () => {
                 setError(response.message || 'Login failed');
             }
         } catch (err) {
+            console.error('Login error:', err);
             setError('An error occurred. Please try again.');
         } finally {
             setLoading(false);

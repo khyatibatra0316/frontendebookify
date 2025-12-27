@@ -1,9 +1,10 @@
 import axios from 'axios';
 import authService from './authService';
 
-const API_URL = 'http://localhost:4000/api/books';
+const API_URL = `${import.meta.env.VITE_API_URL}/api/books`;
+export const BASE_URL = import.meta.env.VITE_API_URL;
 
-// Get auth config with headers
+
 const getAuthConfig = () => {
     const headers = {
         ...authService.getAuthHeader()
@@ -11,19 +12,18 @@ const getAuthConfig = () => {
     return { headers, withCredentials: true };
 };
 
-// Upload a new book
 export const uploadBook = async (bookData) => {
     try {
         const formData = new FormData();
 
-        // Append all text fields
+   
         Object.keys(bookData).forEach(key => {
             if (key !== 'bookFile' && key !== 'coverImage' && bookData[key]) {
                 formData.append(key, bookData[key]);
             }
         });
 
-        // Append files
+   
         if (bookData.bookFile) {
             formData.append('bookFile', bookData.bookFile);
         }
@@ -41,7 +41,7 @@ export const uploadBook = async (bookData) => {
     }
 };
 
-// Get books by writer ID
+
 export const getWriterBooks = async (writerId) => {
     try {
         const response = await axios.get(`${API_URL}/writer/${writerId}`, getAuthConfig());
@@ -51,7 +51,6 @@ export const getWriterBooks = async (writerId) => {
     }
 };
 
-// Get all books
 export const getAllBooks = async () => {
     try {
         const response = await axios.get(API_URL);
@@ -61,7 +60,7 @@ export const getAllBooks = async () => {
     }
 };
 
-// Update a book
+
 export const updateBook = async (bookId, bookData) => {
     try {
         const formData = new FormData();
@@ -82,7 +81,7 @@ export const updateBook = async (bookId, bookData) => {
     }
 };
 
-// Delete a book
+
 export const deleteBook = async (bookId) => {
     try {
         const response = await axios.delete(`${API_URL}/${bookId}`, getAuthConfig());
@@ -92,7 +91,7 @@ export const deleteBook = async (bookId) => {
     }
 };
 
-// Get single book
+
 export const getBook = async (bookId) => {
     try {
         const response = await axios.get(`${API_URL}/${bookId}`);

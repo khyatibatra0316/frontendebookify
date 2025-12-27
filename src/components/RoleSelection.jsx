@@ -20,7 +20,6 @@ const RoleSelection = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
-                    {/* Reader Card */}
                     <div
                         onClick={() => handleRoleSelect('reader')}
                         className={`bg-white/10 backdrop-blur-lg rounded-2xl p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:bg-white/20 border-2 ${selectedRole === 'reader' ? 'border-blue-400 shadow-2xl shadow-blue-500/50' : 'border-transparent'

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api/auth';
+const API_URL = `${import.meta.env.VITE_API_URL}/api/auth`;
 
 // Auth Service for JWT token management
 const authService = {
@@ -37,14 +37,23 @@ const authService = {
                 password
             });
 
+            console.log('AuthService - Full response:', response.data);
+
             if (response.data.success) {
+                console.log('AuthService - Storing token:', response.data.token);
+                console.log('AuthService - Storing user:', response.data.user);
+
                 // Store token and user data in localStorage
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+
+                console.log('AuthService - Token stored:', localStorage.getItem('token'));
+                console.log('AuthService - User stored:', localStorage.getItem('user'));
             }
 
             return response.data;
         } catch (error) {
+            console.error('AuthService - Login error:', error);
             return {
                 success: false,
                 message: error.response?.data?.message || error.message

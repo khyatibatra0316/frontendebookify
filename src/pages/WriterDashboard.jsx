@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { getWriterBooks, deleteBook } from '../services/bookService';
 import BookUploadForm from '../components/BookUploadForm';
+import BookEditModal from '../components/BookEditModal';
 import BookCard from '../components/BookCard';
-import { Plus, BookOpen, TrendingUp, Users } from 'lucide-react';
+import { Plus, BookOpen, TrendingUp, Users, UserCircle } from 'lucide-react';
 
 const WriterDashboard = () => {
+    const navigate = useNavigate();
     const { user } = useUser();
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showUploadForm, setShowUploadForm] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingBook, setEditingBook] = useState(null);
     const [stats, setStats] = useState({
         totalBooks: 0,
         published: 0,
@@ -62,8 +67,26 @@ const WriterDashboard = () => {
         }
     };
 
+    const handleEditBook = (bookId) => {
+        const book = books.find(b => b._id === bookId);
+        if (book) {
+            setEditingBook(book);
+            setShowEditModal(true);
+        }
+    };
+
+    const handleBookUpdated = () => {
+        setShowEditModal(false);
+        setEditingBook(null);
+        fetchBooks();
+    };
+
     if (showUploadForm) {
         return <BookUploadForm onClose={() => setShowUploadForm(false)} onSuccess={handleBookUploaded} />;
+    }
+
+    if (showEditModal && editingBook) {
+        return <BookEditModal book={editingBook} onClose={() => setShowEditModal(false)} onSuccess={handleBookUpdated} />;
     }
 
     return (
@@ -76,13 +99,22 @@ const WriterDashboard = () => {
                             <h1 className="text-3xl font-bold text-white">Writer Dashboard</h1>
                             <p className="text-purple-200 mt-1">Welcome back, {user?.name || 'Writer'}!</p>
                         </div>
-                        <button
-                            onClick={() => setShowUploadForm(true)}
-                            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-                        >
-                            <Plus size={20} />
-                            Upload New Book
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => navigate('/profile')}
+                                className="bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-all border border-white/20"
+                                title="Profile"
+                            >
+                                <UserCircle size={20} />
+                            </button>
+                            <button
+                                onClick={() => setShowUploadForm(true)}
+                                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                            >
+                                <Plus size={20} />
+                                Upload New Book
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,12 +183,18 @@ const WriterDashboard = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {books.map((book) => (
-                                <BookCard key={book._id} book={book} onDelete={handleDeleteBook} />
+                                <BookCard
+                                    key={book._id}
+                                    book={book}
+                                    onDelete={handleDeleteBook}
+                                    onEdit={handleEditBook}
+                                />
                             ))}
                         </div>
                     )}
                 </div>
             </div>
+
         </div>
     );
 };

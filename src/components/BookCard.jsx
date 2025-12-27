@@ -1,4 +1,5 @@
 import { Trash2, Edit, Eye } from 'lucide-react';
+import { BASE_URL } from '../services/bookService';
 
 const BookCard = ({ book, onDelete, onEdit }) => {
     const getStatusColor = (status) => {
@@ -13,7 +14,7 @@ const BookCard = ({ book, onDelete, onEdit }) => {
             <div className="h-64 bg-gradient-to-br from-purple-600 to-pink-600 relative overflow-hidden">
                 {book.coverImage ? (
                     <img
-                        src={`http://localhost:4000${book.coverImage}`}
+                        src={`${BASE_URL}${book.coverImage}`}
                         alt={book.title}
                         className="w-full h-full object-cover"
                     />
@@ -25,7 +26,7 @@ const BookCard = ({ book, onDelete, onEdit }) => {
                     </div>
                 )}
 
-                {/* Status Badge */}
+   
                 <div className="absolute top-4 right-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(book.status)}`}>
                         {book.status}
@@ -33,7 +34,7 @@ const BookCard = ({ book, onDelete, onEdit }) => {
                 </div>
             </div>
 
-            {/* Book Info */}
+       
             <div className="p-6">
                 <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{book.title}</h3>
                 <p className="text-purple-200 text-sm mb-1">by {book.author}</p>
@@ -47,17 +48,17 @@ const BookCard = ({ book, onDelete, onEdit }) => {
                     <p className="text-purple-100 text-sm mb-4 line-clamp-2">{book.description}</p>
                 )}
 
-                {/* Metadata */}
+               
                 <div className="flex gap-4 text-xs text-purple-200 mb-4">
                     {book.pageCount && <span>📖 {book.pageCount} pages</span>}
                     {book.language && <span>🌐 {book.language}</span>}
                 </div>
 
-                {/* Actions */}
+       
                 <div className="flex gap-2">
                     {book.fileUrl && (
                         <a
-                            href={`http://localhost:4000${book.fileUrl}`}
+                            href={`${BASE_URL}${book.fileUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"

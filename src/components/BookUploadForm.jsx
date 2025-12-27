@@ -95,7 +95,7 @@ const BookUploadForm = ({ onClose, onSuccess }) => {
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
             <div className="max-w-4xl mx-auto">
                 <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
-                    {/* Header */}
+                   
                     <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6 flex justify-between items-center">
                         <h2 className="text-2xl font-bold text-white">Upload New Book</h2>
                         <button
@@ -106,9 +106,9 @@ const BookUploadForm = ({ onClose, onSuccess }) => {
                         </button>
                     </div>
 
-                    {/* Form */}
+                ]
                     <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                        {/* File Upload Area */}
+                     ]
                         <div
                             onDragEnter={handleDrag}
                             onDragLeave={handleDrag}
@@ -140,7 +140,7 @@ const BookUploadForm = ({ onClose, onSuccess }) => {
                             </label>
                         </div>
 
-                        {/* Cover Image */}
+                        
                         <div>
                             <label className="block text-white font-semibold mb-2">
                                 <ImageIcon size={20} className="inline mr-2" />
@@ -199,7 +199,6 @@ const BookUploadForm = ({ onClose, onSuccess }) => {
                             />
                         </div>
 
-                        {/* Category, ISBN, Language */}
                         <div className="grid md:grid-cols-3 gap-6">
                             <div>
                                 <label className="block text-white font-semibold mb-2">Category</label>
@@ -236,7 +235,7 @@ const BookUploadForm = ({ onClose, onSuccess }) => {
                             </div>
                         </div>
 
-                        {/* Page Count, Price, Status */}
+       
                         <div className="grid md:grid-cols-3 gap-6">
                             <div>
                                 <label className="block text-white font-semibold mb-2">Page Count</label>

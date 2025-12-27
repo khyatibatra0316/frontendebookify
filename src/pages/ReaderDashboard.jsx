@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { getAllBooks } from '../services/bookService';
-import { ArrowLeft, Search, Menu, Hash, Star, Eye, Zap } from 'lucide-react';
+import { getAllBooks, BASE_URL } from '../services/bookService';
+import { ArrowLeft, Search, Menu, Hash, Star, Eye, Zap, UserCircle } from 'lucide-react';
 import './ReaderDashboard.css';
 
 const ReaderDashboard = ({ onBookSelect }) => {
@@ -108,7 +108,13 @@ const ReaderDashboard = ({ onBookSelect }) => {
                                 className="search-input"
                             />
                         </div>
-                        <div className="user-avatar"></div>
+                        <button
+                            onClick={() => navigate('/profile')}
+                            className="user-avatar"
+                            title="Profile"
+                        >
+                            <UserCircle size={24} />
+                        </button>
                     </div>
                 </div>
             </header>
@@ -152,7 +158,7 @@ const ReaderDashboard = ({ onBookSelect }) => {
                                     >
                                         {book.coverImage ? (
                                             <img
-                                                src={`http://localhost:4000${book.coverImage}`}
+                                                src={`${BASE_URL}${book.coverImage}`}
                                                 alt={book.title}
                                             />
                                         ) : (
@@ -189,6 +195,7 @@ const ReaderDashboard = ({ onBookSelect }) => {
                     </div>
                 )}
             </main>
+
         </div>
     );
 };
